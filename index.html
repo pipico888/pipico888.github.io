@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY RECIPE BOOK</title>
+<style>
+
+  @font-face {
+    font-family: "Honey";
+    src: url(data:font/otf;base64,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) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --mint: #B3DBC0;
+    --red: #FE0000;
+    --porcelain: #FDF6F6;
+    --blue: #67BACA;
+    --text: #666666;
+    --dark-text: #555555;
+    --white: #ffffff;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(103,186,202,.18) 0 35px, transparent 36px),
+      radial-gradient(circle at 90% 18%, rgba(254,0,0,.08) 0 28px, transparent 29px),
+      var(--porcelain);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  }
+
+  .app {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  /* インデックスをMY RECIPE BOOKの直下に置き、カードとぴったり接続 */
+  .app-page > header {
+    margin-bottom: 20px;
+  }
+
+  .app-page > .app-nav {
+    margin-bottom: -2px;
+  }
+
+  .logo {
+    display: inline-block;
+    padding: 10px 24px 12px;
+    background: var(--red);
+    color: white;
+    border-radius: 999px;
+    font-family: "Honey", cursive;
+    font-size: clamp(24px, 7vw, 38px);
+    letter-spacing: .5px;
+    transform: rotate(-2deg);
+    box-shadow: 4px 4px 0 rgba(103,186,202,.35);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .kitchen-icon {
+    width: 78px;
+    height: 38px;
+    flex: 0 0 auto;
+    color: rgba(255,255,255,.96);
+  }
+
+
+  .card {
+    background: rgba(255,255,255,.92);
+    border: 3px solid var(--mint);
+    border-radius: 28px;
+    padding: 24px 20px;
+    box-shadow: 7px 7px 0 rgba(103,186,202,.22);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 14px;
+    color: var(--dark-text);
+    font-family: "Honey", cursive;
+    font-size: 23px;
+  }
+
+  .section-title.preference-title {
+    font-size: 14px;
+  }
+
+  .section-title.preference-title .section-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .section-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    color: #666;
+  }
+
+  .section-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  label,
+  .field-label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 700;
+    color: var(--dark-text);
+    font-size: 14px;
+  }
+
+  .required {
+    color: var(--red);
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    border: 2px solid #d9e9df;
+    border-radius: 15px;
+    padding: 13px 14px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    outline: none;
+    transition: .2s;
+  }
+
+  textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(103,186,202,.14);
+  }
+
+  .hint {
+    margin-top: 6px;
+    color: #999;
+    font-size: 11px;
+  }
+
+  .radio-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .choice {
+    position: relative;
+  }
+
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .choice span {
+    display: block;
+    padding: 9px 14px;
+    border: 2px solid #d9e9df;
+    border-radius: 999px;
+    background: #fff;
+    color: #777;
+    cursor: pointer;
+    font-size: 13px;
+    transition: .18s;
+  }
+
+  .choice input:checked + span {
+    border-color: var(--blue);
+    background: #e9f7fa;
+    color: #4d8f9c;
+    font-weight: 700;
+  }
+
+  .family-box {
+    margin-top: 8px;
+    padding: 16px;
+    border-radius: 20px;
+    background: #f7fbf8;
+    border: 2px dashed #c6dfcf;
+  }
+
+  .family-row {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px dotted #d5dfd8;
+  }
+
+  .family-row:last-child {
+    border-bottom: none;
+  }
+
+  .family-name {
+    font-weight: 700;
+    color: var(--dark-text);
+    font-size: 13px;
+  }
+
+  .rating-row {
+    display: flex;
+    gap: 7px;
+  }
+
+  .rating {
+    position: relative;
+  }
+
+  .rating input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .rating span {
+    width: 38px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #d9e9df;
+    border-radius: 11px;
+    background: white;
+    color: #888;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .18s;
+  }
+
+  .rating input:checked + span {
+    border-color: var(--blue);
+    background: #e9f7fa;
+    color: #4d8f9c;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e6eee9;
+    margin: 22px 0;
+  }
+
+  .register-button {
+    width: 100%;
+    border: 0;
+    border-radius: 18px;
+    padding: 15px 18px;
+    background: var(--red);
+    color: white;
+    font-family: "Honey", cursive;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #c80000;
+    transition: .12s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .register-button-icon {
+    width: 58px;
+    height: 32px;
+    flex: 0 0 auto;
+  }
+
+  .register-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .register-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #c80000;
+  }
+
+  .success {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #eef9f1;
+    color: #5b8567;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 520px) {
+    .app {
+      padding: 18px 12px 36px;
+    }
+
+    .card {
+      padding: 20px 15px;
+      border-radius: 23px;
+    }
+
+    .family-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .family-name {
+      margin-bottom: 2px;
+    }
+  }
+
+  /* Retro kitchen side stripes */
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  body::before {
+    width: 40px;
+    background: #67BACA;
+  }
+
+  body::after {
+    left: 40px;
+    width: 30px;
+    background: #B3DBC0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 520px) {
+    body::before { width: 40px; }
+    body::after { left: 40px; width: 30px; }
+  }
+
+
+  .section-title,
+  .field-label,
+  label,
+  .register-button,
+  .hint,
+  .family-name,
+  .choice span,
+  input,
+  textarea {
+    font-family: "メイリオ", Meiryo, sans-serif;
+  }
+
+
+
+
+
+  .app-nav {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 5px;
+    margin: 0 0 -2px 12px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .nav-button {
+    appearance: none;
+    border: 2px solid var(--mint);
+    border-bottom: 0;
+    background: #fff;
+    color: #6b7770;
+    border-radius: 13px 13px 0 0;
+    padding: 9px 14px 8px;
+    min-width: 112px;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    cursor: pointer;
+    box-shadow: 2px -1px 0 rgba(103,186,202,.14);
+  }
+
+  .nav-button.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: white;
+    padding-top: 11px;
+  }
+
+  .app-page .card {
+    position: relative;
+    z-index: 2;
+  }
+
+  .app-page { display: none; }
+  .app-page.active { display: block; }
+
+  .list-page .card { padding-bottom: 22px; }
+
+  .list-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .list-heading-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .list-heading-icon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+
+  .list-heading-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .list-heading h2 {
+    margin: 0;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    color: var(--text-dark, #555);
+    font-size: 22px;
+  }
+
+  .recipe-count {
+    color: #888;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 1px 9px;
+    margin-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .filters::-webkit-scrollbar { display: none; }
+
+  .filter-button {
+    flex: 0 0 auto;
+    border: 2px solid #d9e9df;
+    background: #fff;
+    color: #777;
+    border-radius: 999px;
+    padding: 8px 13px;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .filter-button.active {
+    border-color: var(--blue);
+    background: #e9f7fa;
+    color: #4d8f9c;
+    font-weight: 700;
+  }
+
+  .list-note {
+    margin: 2px 2px 14px;
+    color: #999;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 11px;
+  }
+
+  .recipe-list {
+    display: grid;
+    gap: 13px;
+  }
+
+  .recipe-card {
+    background: #fff;
+    border: 2px solid #d9e9df;
+    border-radius: 21px;
+    padding: 15px;
+    box-shadow: 3px 3px 0 rgba(179,219,192,.35);
+  }
+
+  .recipe-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .recipe-name {
+    margin: 0;
+    color: #555;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 19px;
+    line-height: 1.35;
+  }
+
+  .sleep-badge {
+    flex: 0 0 auto;
+    border-radius: 999px;
+    padding: 5px 8px;
+    background: #fff1f1;
+    color: var(--red);
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .recipe-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 8px;
+    color: #888;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 11px;
+  }
+
+  .recipe-meta strong { color: #666; }
+
+  .ratings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .rating-pill {
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: #f7fbf8;
+    color: #6d8274;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 10px;
+  }
+
+  .rating-pill.empty { opacity: .55; }
+
+  .cook-button {
+    width: 100%;
+    margin-top: 13px;
+    border: 0;
+    border-radius: 14px;
+    padding: 10px 12px;
+    background: var(--red);
+    color: #fff;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #c80000;
+  }
+
+  .cook-button.done {
+    background: #e9f7fa;
+    color: #4d8f9c;
+    box-shadow: 0 3px 0 #b5dce3;
+  }
+
+  .empty-list {
+    text-align: center;
+    padding: 28px 12px 16px;
+    color: #888;
+  }
+
+  .empty-list-heart {
+    color: var(--red);
+    font-size: 30px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .empty-list-title {
+    color: #666;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-weight: 700;
+  }
+
+  .empty-list-text {
+    margin: 7px 0 14px;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .go-register {
+    border: 0;
+    border-radius: 14px;
+    padding: 10px 16px;
+    background: var(--blue);
+    color: #fff;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  @media (max-width: 520px) {
+    .app-nav { margin-bottom: 12px; }
+    .nav-button { padding: 8px 12px; }
+    .list-heading h2 { font-size: 20px; }
+    .recipe-name { font-size: 18px; }
+  }
+
+</style>
+</head>
+<body>
+<main class="app">
+
+
+
+
+
+  <section id="registerPage" class="app-page active"><header>
+    
+
+
+    <div class="logo">
+      <svg class="kitchen-icon" viewBox="0 0 120 54" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <!-- ladle -->
+          <circle cx="18" cy="16" r="9"/>
+          <path d="M18 25v20"/>
+          <path d="M18 45l-3 5M18 45l3 5"/>
+          <!-- spatula -->
+          <path d="M54 9v37"/>
+          <path d="M49 9h10l-1 17H50z"/>
+          <path d="M52 46h4"/>
+          <!-- little pot -->
+          <path d="M76 24h30v16c0 5-4 8-9 8H85c-5 0-9-3-9-8z"/>
+          <path d="M73 24h36"/>
+          <path d="M84 19c2-3 4-3 6 0 2-3 4-3 6 0"/>
+          <path d="M79 48v3M103 48v3"/>
+        </g>
+      </svg>
+      <span>MY RECIPE BOOK</span>
+    </div>
+  </header>
+
+  <div class="app-nav" aria-label="ページ切り替え">
+  <button class="nav-button" data-page="listPage">📖 レシピ一覧</button>
+  <button class="nav-button active" data-page="registerPage">📝 レシピ登録</button>
+</div>
+
+  <section class="card">
+    <form id="recipeForm">
+
+      <h2 class="section-title">
+        <span class="section-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- knife -->
+              <path d="M11 7v34"/>
+              <path d="M11 7c6 2 9 8 9 14v2h-9"/>
+              <!-- fork -->
+              <path d="M33 7v34"/>
+              <path d="M28 7v10M33 7v10M38 7v10"/>
+              <path d="M28 17c0 4 2 6 5 6s5-2 5-6"/>
+            </g>
+          </svg>
+        </span>
+        <span>レシピを登録</span>
+      </h2>
+
+      <div class="field">
+        <label for="recipeName">
+          レシピ名 <span class="required">必須</span>
+        </label>
+        <input
+          id="recipeName"
+          name="recipeName"
+          type="text"
+          placeholder="例：パッタイ"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="recipeUrl">レシピURL</label>
+        <input
+          id="recipeUrl"
+          name="recipeUrl"
+          type="url"
+          placeholder="https://..."
+        >
+        <div class="hint">レシピサイトなどのURLがある場合だけ入力してください。</div>
+      </div>
+
+      <div class="field">
+        <label for="recipeMemo">レシピメモ</label>
+        <textarea
+          id="recipeMemo"
+          name="recipeMemo"
+          placeholder="我が家でのアレンジや覚えておきたいことなど"
+        ></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-label">つくる人</div>
+        <div class="radio-row">
+          <label class="choice">
+            <input type="radio" name="cookPerson" value="" checked>
+            <span>指定なし</span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="cookPerson" value="私">
+            <span>私</span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="cookPerson" value="旦那さん">
+            <span>旦那さん</span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="cookPerson" value="2人">
+            <span>2人</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title preference-title">
+        <span class="section-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <path d="M24.8 39.8
+C22.7 38.3 17.1 33.0 12.5 28.3
+C8.0 23.7 5.4 20.4 7.0 16.6
+C8.4 13.1 11.7 10.0 15.8 9.0
+C19.8 8.0 22.3 10.2 24.2 13.0
+C25.7 10.0 28.1 7.9 31.8 8.6
+C36.2 9.4 39.2 13.2 40.2 16.6
+C41.3 20.4 38.1 23.8 34.2 27.8
+C30.5 31.6 27.1 35.8 24.8 39.8 Z"
+fill="var(--red)" stroke="none"/>
+          </svg>
+        </span>
+        <span>みんなの好み</span>
+      </h2>
+
+      <div class="family-box">
+
+        <div class="family-row">
+          <div class="family-name">かおり：</div>
+          <div class="rating-row">
+            <label class="rating">
+              <input type="radio" name="kaori" value="○">
+              <span>○</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="kaori" value="△">
+              <span>△</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="kaori" value="×">
+              <span>×</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="family-row">
+          <div class="family-name">たかみつ：</div>
+          <div class="rating-row">
+            <label class="rating">
+              <input type="radio" name="takamitsu" value="○">
+              <span>○</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="takamitsu" value="△">
+              <span>△</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="takamitsu" value="×">
+              <span>×</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="family-row">
+          <div class="family-name">こたろう：</div>
+          <div class="rating-row">
+            <label class="rating">
+              <input type="radio" name="kotaro" value="○">
+              <span>○</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="kotaro" value="△">
+              <span>△</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="kotaro" value="×">
+              <span>×</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="family-row">
+          <div class="family-name">やまと：</div>
+          <div class="rating-row">
+            <label class="rating">
+              <input type="radio" name="yamato" value="○">
+              <span>○</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="yamato" value="△">
+              <span>△</span>
+            </label>
+            <label class="rating">
+              <input type="radio" name="yamato" value="×">
+              <span>×</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="hint" style="margin: 10px 2px 20px;">
+        みんなの好みはあとから修正できます。登録時に未選択でもOKです。
+      </div>
+
+      <button class="register-button" type="submit">
+        <svg class="register-button-icon" viewBox="0 0 96 48" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- fork on the left -->
+            <path d="M15 6v15"/>
+            <path d="M10 6v8M15 6v8M20 6v8"/>
+            <path d="M10 14c0 4 2 6 5 6s5-2 5-6"/>
+            <path d="M15 20v21"/>
+            <!-- plate in the center -->
+            <ellipse cx="48" cy="31" rx="22" ry="8"/>
+            <path d="M29 31c2 8 8 11 19 11s17-3 19-11"/>
+            <ellipse cx="48" cy="28" rx="14" ry="4"/>
+            <!-- knife on the right -->
+            <path d="M80 6v35"/>
+            <path d="M80 6c7 2 10 7 10 13v2H80"/>
+          </g>
+        </svg>
+        <span>レシピを登録する</span>
+      </button>
+
+      <div id="successMessage" class="success">
+        ✨ レシピを登録しました！
+      </div>
+
+    </form>
+  </section>
+</section>
+
+
+<section id="listPage" class="app-page list-page">
+  <header>
+    <div class="logo">
+      <svg class="kitchen-icon" viewBox="0 0 120 54" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="16" r="9"/>
+          <path d="M18 25v20"/>
+          <path d="M18 45l-3 5M18 45l3 5"/>
+          <path d="M54 9v37"/>
+          <path d="M49 9h10l-1 17H50z"/>
+          <path d="M52 46h4"/>
+          <path d="M76 24h30v16c0 5-4 8-9 8H85c-5 0-9-3-9-8z"/>
+          <path d="M73 24h36"/>
+          <path d="M84 19c2-3 4-3 6 0 2-3 4-3 6 0"/>
+          <path d="M79 48v3M103 48v3"/>
+        </g>
+      </svg>
+      <span>MY RECIPE BOOK</span>
+    </div>
+  </header>
+
+  <div class="app-nav" aria-label="ページ切り替え">
+  <button class="nav-button active" data-page="listPage">📖 レシピ一覧</button>
+  <button class="nav-button" data-page="registerPage">📝 レシピ登録</button>
+</div>
+
+  <section class="card">
+    <div class="list-heading">
+      <div class="list-heading-left">
+        <div class="list-heading-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 10h32v27H8z"/>
+              <path d="M13 16h22M13 22h18M13 28h12"/>
+              <path d="M35 32c4 1 6 3 6 6"/>
+            </g>
+          </svg>
+        </div>
+        <h2>レシピ一覧</h2>
+      </div>
+      <div id="recipeCount" class="recipe-count"></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-button active" data-filter="all">すべて</button>
+      <button class="filter-button" data-filter="stale">💤 30日以上作ってない</button>
+    </div>
+
+    <p class="list-note">最近作っていない料理が上にくるように並べています👀✨</p>
+
+    <div id="recipeList" class="recipe-list"></div>
+  </section>
+</section>
+
+</main>
+
+<script>
+/*
+  MY RECIPE BOOK v6
+  - データ保存をIndexedDBに変更
+  - IndexedDBが使えない環境ではlocalStorageへ自動フォールバック
+  - 旧v5のlocalStorageデータがあれば初回起動時にIndexedDBへ移行
+*/
+const STORAGE_KEY = "my_recipe_book";
+const DB_NAME = "my_recipe_book_db";
+const DB_VERSION = 1;
+const STORE_NAME = "recipes";
+let activeFilter = "all";
+let dbPromise = null;
+
+const registerPage = document.getElementById("registerPage");
+const listPage = document.getElementById("listPage");
+const form = document.getElementById("recipeForm");
+const successMessage = document.getElementById("successMessage");
+
+function localStorageLoadRecipes() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch (error) {
+    console.error("localStorageの読み込みに失敗しました。", error);
+    return [];
+  }
+}
+
+function localStorageSaveRecipes(recipes) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
+}
+
+function indexedDBAvailable() {
+  return typeof indexedDB !== "undefined";
+}
+
+function openDB() {
+  if (!indexedDBAvailable()) return Promise.reject(new Error("IndexedDBが利用できません。"));
+  if (dbPromise) return dbPromise;
+
+  dbPromise = new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = event => resolve(event.target.result);
+    request.onerror = () => reject(request.error || new Error("IndexedDBを開けませんでした。"));
+  });
+
+  return dbPromise;
+}
+
+function indexedDBGetAll() {
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const request = tx.objectStore(STORE_NAME).getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  }));
+}
+
+function indexedDBPutAll(recipes) {
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    store.clear();
+    recipes.forEach(recipe => store.put(recipe));
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error || new Error("IndexedDBへの保存に失敗しました。"));
+    tx.onabort = () => reject(tx.error || new Error("IndexedDBへの保存が中断されました。"));
+  }));
+}
+
+async function loadRecipes() {
+  try {
+    const recipes = await indexedDBGetAll();
+
+    // 初回だけ、旧v5のlocalStorageデータをIndexedDBへ移す
+    if (recipes.length === 0) {
+      const oldRecipes = localStorageLoadRecipes();
+      if (oldRecipes.length > 0) {
+        await indexedDBPutAll(oldRecipes);
+        return oldRecipes;
+      }
+    }
+
+    return recipes;
+  } catch (error) {
+    console.warn("IndexedDBを利用できないためlocalStorageへ切り替えます。", error);
+    return localStorageLoadRecipes();
+  }
+}
+
+async function saveRecipes(recipes) {
+  try {
+    await indexedDBPutAll(recipes);
+    return;
+  } catch (error) {
+    console.warn("IndexedDBへの保存に失敗したためlocalStorageへ切り替えます。", error);
+  }
+
+  try {
+    localStorageSaveRecipes(recipes);
+  } catch (error) {
+    console.error("レシピの保存に失敗しました。", error);
+    throw new Error("レシピを保存できませんでした。ブラウザの設定をご確認ください。");
+  }
+}
+
+function todayISO() {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
+
+function showPage(pageId) {
+  document.querySelectorAll(".app-page").forEach(page => {
+    page.classList.toggle("active", page.id === pageId);
+  });
+
+  document.querySelectorAll(".nav-button").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === pageId);
+  });
+
+  if (pageId === "listPage") renderList();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".nav-button").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const recipes = await loadRecipes();
+  const recipe = {
+    id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+    name: document.getElementById("recipeName").value.trim(),
+    url: document.getElementById("recipeUrl").value.trim(),
+    memo: document.getElementById("recipeMemo").value.trim(),
+    cookPerson: document.querySelector('input[name="cookPerson"]:checked')?.value || "",
+    ratings: {
+      kaori: document.querySelector('input[name="kaori"]:checked')?.value || "",
+      takamitsu: document.querySelector('input[name="takamitsu"]:checked')?.value || "",
+      kotaro: document.querySelector('input[name="kotaro"]:checked')?.value || "",
+      yamato: document.querySelector('input[name="yamato"]:checked')?.value || ""
+    },
+    cookingHistory: [todayISO()]
+  };
+
+  recipes.push(recipe);
+
+  try {
+    await saveRecipes(recipes);
+  } catch (error) {
+    successMessage.textContent = "⚠️ 保存できませんでした。もう一度お試しください。";
+    successMessage.style.display = "block";
+    return;
+  }
+
+  form.reset();
+  successMessage.textContent = "✨ レシピを登録しました！";
+  successMessage.style.display = "block";
+
+  // 登録完了後はすぐ一覧へ
+  showPage("listPage");
+});
+
+function parseISODate(value) {
+  if (!value) return null;
+  const parts = value.split("-").map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+  return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function daysSince(value) {
+  const date = parseISODate(value);
+  if (!date) return null;
+  const today = parseISODate(todayISO());
+  return Math.floor((today - date) / 86400000);
+}
+
+function latestDate(recipe) {
+  const history = Array.isArray(recipe.cookingHistory) ? recipe.cookingHistory : [];
+  if (history.length) return [...history].sort().at(-1);
+  return recipe.latestCookingDate || "";
+}
+
+function cookingCount(recipe) {
+  if (Array.isArray(recipe.cookingHistory)) return recipe.cookingHistory.length;
+  return Number(recipe.cookingCount || 0);
+}
+
+function formatDate(value) {
+  if (!value) return "未記録";
+  const parts = value.split("-");
+  return parts.length === 3 ? `${parts[0]}/${parts[1]}/${parts[2]}` : value;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function sortRecipes(recipes) {
+  return [...recipes].sort((a, b) => {
+    const da = daysSince(latestDate(a));
+    const db = daysSince(latestDate(b));
+    return (db ?? -1) - (da ?? -1);
+  });
+}
+
+function ratingPill(label, value) {
+  return `<span class="rating-pill ${value ? "" : "empty"}">${label} ${value || "—"}</span>`;
+}
+
+async function renderList() {
+  const list = document.getElementById("recipeList");
+  list.innerHTML = `<div class="empty-list"><div class="empty-list-title">読み込み中…👀</div></div>`;
+
+  const allRecipes = await loadRecipes();
+  let recipes = sortRecipes(allRecipes);
+
+  if (activeFilter === "stale") {
+    recipes = recipes.filter(recipe => {
+      const days = daysSince(latestDate(recipe));
+      return days !== null && days >= 30;
+    });
+  }
+
+  document.getElementById("recipeCount").textContent = `${recipes.length}件`;
+
+  if (!recipes.length) {
+    list.innerHTML = `
+      <div class="empty-list">
+        <div class="empty-list-heart">♥</div>
+        <div class="empty-list-title">${
+          activeFilter === "stale"
+            ? "まだ「そろそろ」の料理はありません✨"
+            : "まだレシピがありません"
+        }</div>
+        <p class="empty-list-text">${
+          activeFilter === "stale"
+            ? "30日以上作っていないレシピが出てきたら、ここに並びます👀"
+            : "「また作りたい」と思った料理を登録していきましょう🍳"
+        }</p>
+        ${activeFilter === "all" ? '<button class="go-register" type="button">＋ レシピを登録</button>' : ""}
+      </div>
+    `;
+
+    const goRegister = list.querySelector(".go-register");
+    if (goRegister) goRegister.addEventListener("click", () => showPage("registerPage"));
+    return;
+  }
+
+  list.innerHTML = recipes.map(recipe => {
+    const latest = latestDate(recipe);
+    const days = daysSince(latest);
+    const stale = days !== null && days >= 30;
+    const ratings = recipe.ratings || {};
+    const today = todayISO();
+    const cookedToday = Array.isArray(recipe.cookingHistory) && recipe.cookingHistory.includes(today);
+
+    return `
+      <article class="recipe-card">
+        <div class="recipe-top">
+          <h3 class="recipe-name">${escapeHtml(recipe.name || "名前なし")}</h3>
+          ${stale ? `<span class="sleep-badge">💤 ${days}日作ってない</span>` : ""}
+        </div>
+
+        <div class="recipe-meta">
+          <span>🍳 <strong>${cookingCount(recipe)}回</strong> 作った</span>
+          <span>最新：<strong>${formatDate(latest)}</strong></span>
+          ${recipe.cookPerson ? `<span>つくる人：<strong>${escapeHtml(recipe.cookPerson)}</strong></span>` : ""}
+        </div>
+
+        <div class="ratings">
+          ${ratingPill("かおり", ratings.kaori)}
+          ${ratingPill("たかみつ", ratings.takamitsu)}
+          ${ratingPill("こたろう", ratings.kotaro)}
+          ${ratingPill("やまと", ratings.yamato)}
+        </div>
+
+        <button class="cook-button ${cookedToday ? "done" : ""}" type="button" data-action="cook" data-id="${escapeHtml(recipe.id)}">
+          ${cookedToday ? "✓ 今日作った" : "作った🧑‍🍳✨"}
+        </button>
+      </article>
+    `;
+  }).join("");
+}
+
+async function cookRecipe(id) {
+  const recipes = await loadRecipes();
+  const recipe = recipes.find(item => item.id === id);
+  if (!recipe) return;
+
+  if (!Array.isArray(recipe.cookingHistory)) recipe.cookingHistory = [];
+
+  const today = todayISO();
+
+  if (recipe.lastCookButtonAction?.date === today && recipe.lastCookButtonAction.added) {
+    const index = recipe.cookingHistory.lastIndexOf(today);
+    if (index >= 0) recipe.cookingHistory.splice(index, 1);
+    recipe.lastCookButtonAction = null;
+    await saveRecipes(recipes);
+    renderList();
+    return;
+  }
+
+  if (recipe.cookingHistory.includes(today)) {
+    recipe.lastCookButtonAction = { date: today, added: false };
+    await saveRecipes(recipes);
+    renderList();
+    return;
+  }
+
+  recipe.cookingHistory.push(today);
+  recipe.lastCookButtonAction = { date: today, added: true };
+  await saveRecipes(recipes);
+  renderList();
+}
+
+document.querySelectorAll(".filter-button").forEach(button => {
+  button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter;
+    document.querySelectorAll(".filter-button").forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    renderList();
+  });
+});
+
+document.getElementById("recipeList").addEventListener("click", event => {
+  const button = event.target.closest('[data-action="cook"]');
+  if (button) cookRecipe(button.dataset.id);
+});
+
+renderList();
+</script>
+
+</body>
+</html>
