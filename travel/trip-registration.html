@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>なかむら家の旅きろく｜旅を追加</title>
+<style>
+:root{--peach:#EFCCBB;--blue:#6EB5C0;--deep:#006C84;--ice:#E2E8E4;--text:#617274}
+*{box-sizing:border-box}body{margin:0;background:#f7faf9;color:var(--text);font-family:"M PLUS 1p","Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic",Meiryo,sans-serif;line-height:1.6}
+header{background:linear-gradient(180deg,#d9f1fb,#edf9fd);color:#075887;text-align:center;padding:28px 16px 18px}
+header h1{margin:0;font-family:"Segoe Print","Bradley Hand","Hiragino Maru Gothic ProN",cursive;font-size:48px;line-height:1.05;color:#008ac0;font-weight:500}header p{margin:8px 0 0;font-size:18px;color:#075887}
+main{max-width:680px;margin:auto;padding:18px 14px 90px}.card{background:#fff;border-radius:18px;padding:18px 16px;margin-bottom:14px;box-shadow:0 3px 14px #006c8417}
+h2{margin:0 0 15px;color:var(--deep);font-size:17px;border-left:5px solid var(--peach);padding-left:9px}
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea,button{font:inherit}input[type=text],input[type=date],input[type=number],select,textarea{width:100%;border:1px solid #cddddd;border-radius:11px;padding:10px 11px;color:var(--text);background:#fff}textarea{min-height:72px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.status{display:flex;gap:8px}.status label{margin:0;flex:1}.status input{display:none}.status span{display:block;text-align:center;padding:9px;border:1px solid #cddddd;border-radius:11px;font-size:13px}.status input:checked+span{background:var(--blue);color:#fff;border-color:var(--blue)}
+.search{position:relative}.search input{padding-left:35px}.search b{position:absolute;left:12px;top:7px;color:var(--blue);font-size:19px}
+.options{display:none;margin-top:6px;border:1px solid #d5e2e1;border-radius:11px;max-height:180px;overflow:auto}.options button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:9px 12px;color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{background:var(--deep);color:#fff;border-radius:999px;padding:4px 9px;font-size:12px}.chip button{border:0;background:none;color:#fff;padding:0 0 0 4px}
+.day,.expense{border:1px solid #dbe7e6;border-radius:14px;padding:12px;margin-top:10px;background:#fbfdfc}.day-title{font-weight:bold;color:var(--deep);font-size:14px}.field{font-size:12px;font-weight:bold;margin:8px 0 3px}
+.add,.remove,.submit{border:0;border-radius:999px;padding:9px 14px}.add{background:var(--ice);color:var(--deep);margin-top:10px}.remove{background:#f4e3dd;color:#a06b5c;font-size:12px}.expensegrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.full{grid-column:1/-1}.expense-total{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:10px;border-radius:13px;background:#dff2f7;color:#075887}.expense-total strong{font-size:19px}.note{font-size:11px;color:#849293;margin-top:5px}
+footer{position:fixed;left:0;right:0;bottom:0;background:#f7faf9ee;padding:10px 14px 14px;border-top:1px solid #e1eceb}.submit{width:100%;background:var(--deep);color:#fff;font-weight:bold;font-size:16px}
+@media(max-width:430px){.row,.expensegrid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+<style id="calendar-add-style">
+.calendar-add-wrap{margin-top:12px}
+.calendar-add-button{width:100%;border:1.2px solid #6EB5C0;background:#edf9fd;color:#006C84;border-radius:13px;padding:11px 14px;font-family:"M PLUS 1p","Hiragino Maru Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:14px;font-weight:700}
+.calendar-note{font-size:10.5px;color:#849293;margin:5px 2px 0}
+</style>
+<style id="mobile-date-field-fix">
+.row>div{min-width:0;width:100%;}
+input[type="date"]{display:block;min-width:0;max-width:100%;width:100%;height:46px;box-sizing:border-box;appearance:none;-webkit-appearance:none;padding:10px 12px;border-radius:11px;overflow:hidden;}
+@media(max-width:430px){.row{display:block}.row>div{width:100%;min-width:0;margin:0 0 10px}.row input[type="date"]{display:block;width:100%;max-width:100%;min-width:0;margin:0;padding:10px 12px;box-sizing:border-box;} }
+</style>
+
+<style id="expense-category-color-style">
+.expense-category[data-cat="宿泊"]{background:#DFF2F7}
+.expense-category[data-cat="食事"]{background:#F7D9DB}
+.expense-category[data-cat="交通"]{background:#FFF8BB}
+.expense-category[data-cat="観光"]{background:#F8D8BA}
+.expense-category[data-cat="お土産"]{background:#DCECC7}
+</style>
+</head>
+<body>
+<header><h1>Trip Registration</h1><p>— 旅行を登録 —</p></header>
+<main>
+<noscript><div class="card" style="background:#fff8bb;color:#617274;margin-bottom:14px">JavaScriptが無効でも、登録項目と入力欄を確認できるようにしています✨</div></noscript>
+<section class="card">
+<h2>基本情報</h2>
+<label>旅行名</label><input id="name" type="text" placeholder="例：北陸＆白川郷旅行">
+<div class="row"><div><label>開始日</label><input id="start" type="date"></div><div><label>終了日</label><input id="end" type="date"></div></div>
+<div class="calendar-add-wrap">
+<button type="button" class="calendar-add-button" onclick="addToCalendar()">📅 カレンダーに追加</button>
+<div class="calendar-note">iPhoneのカレンダーで「ファミリー」など保存先を選べます✨</div>
+</div>
+<label>ステータス</label><div class="status"><label><input name="status" type="radio" checked><span>行った✨</span></label><label><input name="status" type="radio"><span>予定</span></label></div>
+<label>都道府県</label>
+<div class="search"><b>⌕</b><input id="pref" type="text" placeholder="都道府県を検索…"></div>
+<div id="options" class="options"></div><div id="chips" class="chips"></div><div class="note">検索して複数選択できます</div>
+</section>
+<section class="card"><h2>旅程 <small>任意</small></h2>
+<div id="days">
+  <div class="day" data-static="true">
+    <div class="day-title">日程 1</div>
+    <div class="field">日付</div><input type="date" class="dd">
+    <div class="field">📍 場所</div><input type="text" class="day-place" placeholder="例：盛岡市・盛岡城跡周辺">
+    <div class="field">💬 一言コメント</div><textarea class="day-comment" placeholder="例：長男、わんこそば121杯！✨"></textarea>
+  </div>
+</div>
+<button class="add" onclick="addDay()">＋ 日程を追加</button><div class="note">行った場所と、一言コメントを残せます✨</div></section>
+<section class="card">
+<h2>支出明細 <small>任意</small></h2>
+<div class="expense-total"><span>旅行費用 合計</span><strong id="expenseTotal">0円</strong></div>
+<div id="expenses">
+  <div class="expense" data-static="true">
+    <div class="expensegrid">
+      <div><div class="field">日付</div><input type="date" class="expense-date"></div>
+      <div><div class="field">カテゴリ</div><select class="expense-category"><option value="">選択</option><option>交通</option><option>宿泊</option><option>食事</option><option>観光</option><option>お土産</option></select></div>
+      <div class="full"><div class="field">内容</div><input type="text" class="expense-content" placeholder="例：高速（行き）"></div>
+      <div class="full"><div class="field">金額</div><input type="number" class="expense-amount" min="0" inputmode="numeric" placeholder="0"></div>
+    </div>
+  </div>
+</div>
+<button class="add" onclick="addExpense()">＋ 支出を追加</button>
+<div class="note">支出がない場合は、そのまま登録できます。カテゴリごとの色で、旅費の内訳も見やすく整理できます✨</div>
+</section>
+</main>
+<footer><button class="submit" onclick="check()">✨ この旅を登録</button></footer>
+<script>
+const P=["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"];
+let chosen=[],n=1;
+const pref=document.getElementById("pref"),opt=document.getElementById("options");
+pref.oninput=()=>{let q=pref.value.trim();let a=P.filter(x=>!chosen.includes(x)&&(!q||x.includes(q)));opt.innerHTML=a.map(x=>`<button onclick="pick('${x}')">${x}</button>`).join("");opt.style.display=a.length?"block":"none"};
+pref.onfocus=()=>pref.oninput();
+function pick(x){chosen.push(x);render();pref.value="";pref.oninput()}
+function removePref(x){chosen=chosen.filter(y=>y!==x);render();pref.oninput()}
+function render(){document.getElementById("chips").innerHTML=chosen.map(x=>`<span class="chip">${x}<button onclick="removePref('${x}')">×</button></span>`).join("")}
+function addDay(){
+  n++;
+  let d=document.createElement("div");
+  d.className="day";
+  d.innerHTML=`<div class="day-title">日程 ${n}</div>
+    <div class="field">日付</div><input type="date" class="dd">
+    <div class="field">📍 場所</div><input type="text" class="day-place" placeholder="例：盛岡市・盛岡城跡周辺">
+    <div class="field">💬 一言コメント</div><textarea class="day-comment" placeholder="例：長男、わんこそば121杯！✨"></textarea>
+    <br><button class="remove" onclick="this.parentElement.remove()">この日程を削除</button>`;
+  document.getElementById("days").appendChild(d);
+}
+function addExpense(){
+  let e=document.createElement("div");
+  e.className="expense";
+  e.innerHTML=`<div class="expensegrid">
+    <div><div class="field">日付</div><input type="date" class="expense-date"></div>
+    <div><div class="field">カテゴリ</div><select class="expense-category" onchange="this.dataset.cat=this.value">
+      <option value="">選択</option><option>交通</option><option>宿泊</option><option>食事</option><option>観光</option><option>お土産</option>
+    </select></div>
+    <div class="full"><div class="field">内容</div><input type="text" class="expense-content" placeholder="例：高速（行き）"></div>
+    <div class="full"><div class="field">金額</div><input type="number" class="expense-amount" min="0" inputmode="numeric" placeholder="0" oninput="updateTotal()"></div>
+  </div><br><button class="remove" onclick="this.parentElement.remove();updateTotal()">この支出を削除</button>`;
+  document.getElementById("expenses").appendChild(e);
+  updateTotal();
+}
+document.querySelectorAll(".expense-category").forEach(x=>{x.addEventListener("change",()=>x.dataset.cat=x.value)});
+
+function updateTotal(){
+  let total=0;
+  document.querySelectorAll(".expense-amount").forEach(x=>{total+=Number(x.value)||0});
+  document.getElementById("expenseTotal").textContent=total.toLocaleString()+"円";
+}
+
+function addToCalendar(){
+  const tripName=document.getElementById("name").value.trim();
+  const start=document.getElementById("start").value;
+  const end=document.getElementById("end").value;
+  if(!tripName||!start||!end){alert("旅行名・開始日・終了日を入力してください👀");return}
+  if(end<start){alert("終了日は開始日以降にしてください👀");return}
+  const s=start.replaceAll("-","");
+  const d=new Date(end+"T00:00:00"); d.setDate(d.getDate()+1);
+  const dtend=d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
+  const esc=v=>v.replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+  const uid="travel-"+Date.now()+"@nakamurake";
+  const stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
+  const ics=`BEGIN:VCALENDAR\r
+VERSION:2.0\r
+PRODID:-//Nakamurake Travel Record//JP\r
+CALSCALE:GREGORIAN\r
+BEGIN:VEVENT\r
+UID:${uid}\r
+DTSTAMP:${stamp}\r
+DTSTART;VALUE=DATE:${s}\r
+DTEND;VALUE=DATE:${dtend}\r
+SUMMARY:${esc(tripName)}\r
+END:VEVENT\r
+END:VCALENDAR\r`;
+  const blob=new Blob([ics],{type:"text/calendar;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=tripName.replace(/[\\/:*?"<>|]/g,"_")+".ics";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function check(){if(!name.value.trim()||!start.value||!end.value||!chosen.length){alert("旅行名・開始日・終了日・都道府県を入力してください👀");return}if(end.value<start.value){alert("終了日は開始日以降にしてください👀");return}alert("登録内容を確認しました✨")}
+</script>
+</body></html>
