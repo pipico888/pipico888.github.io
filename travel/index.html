@@ -199,7 +199,7 @@ tr:last-child td{border-bottom:0}
 </style>
 <style id="new-top-controls-style">
 .register-button-wrap{padding:14px 0 10px}
-.register-button{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic",Meiryo,sans-serif !important;background:#006C84;color:#fff;border-radius:16px;padding:14px 18px;font-size:16px;font-weight:700;box-shadow:0 6px 18px rgba(0,108,132,.15)}
+.register-button{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-family:"M PLUS 1p","Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic",Meiryo,sans-serif !important;background:#006C84;color:#fff;border-radius:16px;padding:14px 18px;font-size:16px;font-weight:700;box-shadow:0 6px 18px rgba(0,108,132,.15)}
 .register-button:active{transform:translateY(1px)}
 .pencil-circle{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:1.1px solid #F0D1C5;border-radius:50%;color:#F0D1C5;margin-right:7px;vertical-align:-8px}.pencil-circle svg{width:20px;height:20px}
 .trip-controls{background:rgba(255,255,255,.94);border:1px solid rgba(110,181,192,.25);border-radius:20px;padding:16px 16px 14px;margin:6px 0 15px;box-shadow:0 7px 24px rgba(0,108,132,.08)}
@@ -217,8 +217,9 @@ tr:last-child td{border-bottom:0}
 </style>
 <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style id="system-font">
+/* 一覧・詳細・登録画面でフォントを統一：M PLUS 1p */
 html, body, body * {
-  font-family: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", "Yu Gothic", Meiryo, sans-serif !important;
+  font-family: "M PLUS 1p", "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", "Yu Gothic", Meiryo, sans-serif !important;
 }
 </style>
 <style id="pagination-style">
@@ -241,7 +242,11 @@ html, body, body * {
 .user-trip-edit{background:#e7f4f6;color:#006C84}
 .user-trip-delete{background:#fff0ec;color:#a65c49}
 .user-trip-note{font-size:11px;color:#849293;margin-top:5px}
-@media(max-width:700px){.user-trip-actions button{padding:6px 10px;font-size:11px}}
+.static-trip-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.static-trip-actions button{border:0;border-radius:999px;padding:6px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.static-trip-edit{background:#e7f4f6;color:#006C84}
+.static-trip-delete{background:#fff0ec;color:#a65c49}
+@media(max-width:700px){.user-trip-actions button,.static-trip-actions button{padding:6px 10px;font-size:11px}}
 </style><style id="trip-card-layout-fix">
 /* Trip list card layout fix: no right-side pink total box; keep cards spacious on iPhone. */
 #allTrips .trip{
@@ -629,6 +634,94 @@ html, body, body * {
   cards.sort((a,b)=>(Number(b.dataset.sort)||0)-(Number(a.dataset.sort)||0));
   cards.forEach(c=>list.appendChild(c));
 })();
+</script>
+<script id="legacy-trip-actions-script">
+document.addEventListener("DOMContentLoaded", function(){
+  const KEY='nakamurakeTrips';
+  const allTrips=document.getElementById('allTrips');
+  if(!allTrips) return;
+  const esc=(v)=>String(v??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const pad=n=>String(n).padStart(2,'0');
+  function parseDateRange(text){
+    const t=String(text||'');
+    const m=t.match(/(\d{4})年(\d{1,2})月(\d{1,2})日[^〜]*〜\s*(?:(\d{4})年)?(\d{1,2})月(\d{1,2})日/);
+    if(m){
+      const y1=m[1], y2=m[4]||y1;
+      return {start:`${y1}-${pad(m[2])}-${pad(m[3])}`,end:`${y2}-${pad(m[5])}-${pad(m[6])}`};
+    }
+    const one=t.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    if(one){ const d=`${one[1]}-${pad(one[2])}-${pad(one[3])}`; return {start:d,end:d}; }
+    const month=t.match(/(\d{4})年(\d{1,2})月/);
+    if(month){ return {start:`${month[1]}-${pad(month[2])}-01`,end:`${month[1]}-${pad(month[2])}-01`}; }
+    return {start:'',end:''};
+  }
+  function parseExpenseDate(v, start){
+    const raw=String(v||'').trim();
+    const m=raw.match(/(\d{1,2})\/(\d{1,2})/);
+    if(!m) return '';
+    const base=start?new Date(start+'T00:00:00'):new Date();
+    let y=base.getFullYear();
+    const month=Number(m[1]), day=Number(m[2]);
+    if(start && month < (base.getMonth()+1)-6) y++;
+    return `${y}-${pad(month)}-${pad(day)}`;
+  }
+  function readLegacyTrip(card){
+    const href=card.getAttribute('href')||'';
+    const target=href.startsWith('#')?document.getElementById(href.slice(1)):null;
+    if(!target) return null;
+    const detail=target.querySelector('.detail-card');
+    if(!detail) return null;
+    const name=(detail.querySelector('h2')?.textContent||'').trim();
+    const dates=parseDateRange(detail.querySelector('.meta')?.textContent||'');
+    const prefectures=[...card.querySelectorAll('.prefecture-tags .prefecture-tag')].map(x=>x.textContent.trim()).filter(Boolean);
+    const expenses=[...detail.querySelectorAll('table tbody tr')].map(tr=>{
+      const td=tr.querySelectorAll('td');
+      if(td.length<4) return null;
+      const amount=Number((td[3].textContent||'').replace(/[^0-9]/g,''))||0;
+      return {date:parseExpenseDate(td[0].textContent,dates.start),category:(td[2].textContent||'').trim(),content:(td[1].textContent||'').trim(),amount};
+    }).filter(Boolean);
+    const itinerary=[...detail.querySelectorAll('.itinerary-day')].map(day=>({
+      date:parseExpenseDate((day.querySelector('.itinerary-date')?.textContent||''),dates.start),
+      place:(day.querySelector('.itinerary-location')?.textContent||'').replace(/^📍\s*/,'').trim(),
+      comment:(day.querySelector('.itinerary-comment')?.textContent||'').replace(/^💬\s*/,'').trim()
+    })).filter(x=>x.date||x.place||x.comment);
+    return {id:'legacy-'+target.id,name,start:dates.start,end:dates.end,status:card.dataset.status==='planned'?'planned':'done',prefectures,itinerary,expenses,legacySection:target.id};
+  }
+  function stored(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
+  const deletedKey='nakamurakeDeletedLegacyTrips';
+  function deleted(){try{const x=JSON.parse(localStorage.getItem(deletedKey)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  const hidden=new Set(deleted());
+  allTrips.querySelectorAll('.trip:not(.user-trip)').forEach(card=>{
+    const href=card.getAttribute('href')||'';
+    const targetId=href.startsWith('#')?href.slice(1):'';
+    if(!targetId) return;
+    const legacyId='legacy-'+targetId;
+    if(hidden.has(legacyId)){ card.remove(); const sec=document.getElementById(targetId); if(sec) sec.style.display='none'; return; }
+    if(card.querySelector('.static-trip-actions')) return;
+    const info=card.querySelector('.trip-info'); if(!info) return;
+    const actions=document.createElement('div');
+    actions.className='static-trip-actions';
+    actions.innerHTML='<button type="button" class="static-trip-edit">編集</button><button type="button" class="static-trip-delete">削除</button>';
+    info.appendChild(actions);
+    actions.querySelector('.static-trip-edit').addEventListener('click',(e)=>{
+      e.preventDefault(); e.stopPropagation();
+      const trip=readLegacyTrip(card); if(!trip){alert('この旅行の編集データを読み込めませんでした。');return;}
+      const list=stored(); const i=list.findIndex(x=>x.id===trip.id);
+      if(i>=0) list[i]={...list[i],...trip}; else list.push(trip);
+      save(list); location.href='trip-registration.html?edit='+encodeURIComponent(trip.id);
+    });
+    actions.querySelector('.static-trip-delete').addEventListener('click',(e)=>{
+      e.preventDefault(); e.stopPropagation();
+      const trip=readLegacyTrip(card); const label=trip?.name || card.querySelector('.trip-name')?.textContent?.trim() || 'この旅行';
+      if(!confirm('「'+label+'」を削除しますか？\nこの操作は元に戻せません。')) return;
+      const a=deleted(); if(!a.includes(legacyId)) a.push(legacyId); localStorage.setItem(deletedKey,JSON.stringify(a));
+      const sec=document.getElementById(targetId); if(sec) sec.style.display='none';
+      card.remove();
+      window.dispatchEvent(new Event('travelListChanged'));
+    });
+  });
+});
 </script>
 <script id="new-top-controls-script">
 document.addEventListener("DOMContentLoaded", function(){
