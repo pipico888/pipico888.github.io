@@ -199,7 +199,7 @@ tr:last-child td{border-bottom:0}
 </style>
 <style id="new-top-controls-style">
 .register-button-wrap{padding:14px 0 10px}
-.register-button{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-family:"M PLUS 1p","Hiragino Maru Gothic ProN","Yu Gothic",Meiryo,sans-serif !important;background:#006C84;color:#fff;border-radius:16px;padding:14px 18px;font-size:17px;font-weight:900;box-shadow:0 6px 18px rgba(0,108,132,.15)}
+.register-button{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic",Meiryo,sans-serif !important;background:#006C84;color:#fff;border-radius:16px;padding:14px 18px;font-size:16px;font-weight:700;box-shadow:0 6px 18px rgba(0,108,132,.15)}
 .register-button:active{transform:translateY(1px)}
 .pencil-circle{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:1.1px solid #F0D1C5;border-radius:50%;color:#F0D1C5;margin-right:7px;vertical-align:-8px}.pencil-circle svg{width:20px;height:20px}
 .trip-controls{background:rgba(255,255,255,.94);border:1px solid rgba(110,181,192,.25);border-radius:20px;padding:16px 16px 14px;margin:6px 0 15px;box-shadow:0 7px 24px rgba(0,108,132,.08)}
@@ -235,6 +235,13 @@ html, body, body * {
 .nojs-fallback-list{display:grid;gap:12px;margin:0 0 18px;}
 .nojs-fallback-note{font-size:13px;color:#849293;margin:0 2px 4px;}
 .nojs-fallback-list .trip{width:100%;}
+</style><style id="user-trip-style">
+.user-trip-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.user-trip-actions button{border:0;border-radius:999px;padding:6px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.user-trip-edit{background:#e7f4f6;color:#006C84}
+.user-trip-delete{background:#fff0ec;color:#a65c49}
+.user-trip-note{font-size:11px;color:#849293;margin-top:5px}
+@media(max-width:700px){.user-trip-actions button{padding:6px 10px;font-size:11px}}
 </style><style id="trip-card-layout-fix">
 /* Trip list card layout fix: no right-side pink total box; keep cards spacious on iPhone. */
 #allTrips .trip{
@@ -581,6 +588,48 @@ html, body, body * {
 <!-- TRIP_VISIT_DATA_END -->
 <!-- PREFECTURE_TAGS_START -->
 <!-- PREFECTURE_TAGS_END -->
+<script id="user-trip-storage-script">
+(function(){
+  const KEY='nakamurakeTrips';
+  const list=document.getElementById('allTrips');
+  const yearFilter=document.getElementById('yearFilter');
+  if(!list) return;
+  let trips=[];
+  try{ trips=JSON.parse(localStorage.getItem(KEY)||'[]'); if(!Array.isArray(trips)) trips=[]; }catch(e){ trips=[]; }
+  window.nakamurakeTrips=trips;
+  if(yearFilter){
+    const years=[...new Set(trips.map(t=>(t.start||'').slice(0,4)).filter(Boolean))].sort((a,b)=>Number(b)-Number(a));
+    const existing=new Set([...yearFilter.options].map(o=>o.value));
+    years.forEach(y=>{ if(!existing.has(y)){ const o=document.createElement('option'); o.value=y; o.textContent=y+'年'; yearFilter.appendChild(o); } });
+  }
+  const esc=(v)=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const fmtDate=(d)=>{ if(!d) return ''; const [y,m,day]=d.split('-'); return y+'年'+Number(m)+'月'+Number(day)+'日'; };
+  const tripMonth=(t)=>{ const d=t.start||''; return d ? d.slice(0,7) : ''; };
+  const sortKey=(t)=>Number((t.start||'').replace(/-/g,''))||0;
+  const makeCard=(t)=>{
+    const card=document.createElement('div');
+    card.className='trip user-trip'+(t.status==='planned'?' planned-trip':'');
+    card.dataset.sort=sortKey(t); card.dataset.status=t.status||'done'; card.dataset.year=(t.start||'').slice(0,4); card.dataset.userTripId=t.id;
+    const statusText=t.status==='planned'?'予定':'行った✨';
+    const prefs=(t.prefectures||[]).map(p=>`<span class="prefecture-tag">${esc(p.replace(/都|府|県$/,''))}</span>`).join('');
+    const period=t.start&&t.end ? (t.start===t.end ? fmtDate(t.start) : fmtDate(t.start)+'〜'+fmtDate(t.end)) : tripMonth(t)+(t.status==='planned'?'（予定）':'');
+    card.innerHTML=`<div class="trip-photo trip-placeholder"><span>🧳</span></div><div class="trip-info"><div class="trip-name">${esc(t.name)} <span class="badge">${statusText}</span></div><div class="meta">▣ ${esc(period)}</div><div class="prefecture-tags">${prefs}</div><div class="user-trip-actions"><button type="button" class="user-trip-edit">編集</button><button type="button" class="user-trip-delete">削除</button></div><div class="user-trip-note">この端末に保存した旅行記録</div></div>`;
+    card.querySelector('.user-trip-edit').addEventListener('click',()=>{ location.href='trip-registration.html?edit='+encodeURIComponent(t.id); });
+    card.querySelector('.user-trip-delete').addEventListener('click',()=>{
+      if(!confirm('「'+t.name+'」を削除しますか？\nこの操作は元に戻せません。')) return;
+      const next=trips.filter(x=>x.id!==t.id);
+      localStorage.setItem(KEY,JSON.stringify(next));
+      location.reload();
+    });
+    return card;
+  };
+  trips.sort((a,b)=>sortKey(b)-sortKey(a));
+  trips.forEach(t=>list.appendChild(makeCard(t)));
+  const cards=[...list.children];
+  cards.sort((a,b)=>(Number(b.dataset.sort)||0)-(Number(a.dataset.sort)||0));
+  cards.forEach(c=>list.appendChild(c));
+})();
+</script>
 <script id="new-top-controls-script">
 document.addEventListener("DOMContentLoaded", function(){
   const allTrips = document.getElementById("allTrips");

@@ -159,6 +159,65 @@ END:VCALENDAR\r`;
   document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-function check(){if(!name.value.trim()||!start.value||!end.value||!chosen.length){alert("旅行名・開始日・終了日・都道府県を入力してください👀");return}if(end.value<start.value){alert("終了日は開始日以降にしてください👀");return}alert("登録内容を確認しました✨")}
+function collectTrip(){
+  const itinerary=[...document.querySelectorAll('#days .day')].map(d=>({
+    date:d.querySelector('.dd')?.value||'',
+    place:d.querySelector('.day-place')?.value.trim()||'',
+    comment:d.querySelector('.day-comment')?.value.trim()||''
+  })).filter(x=>x.date||x.place||x.comment);
+  const expenses=[...document.querySelectorAll('#expenses .expense')].map(e=>({
+    date:e.querySelector('.expense-date')?.value||'',
+    category:e.querySelector('.expense-category')?.value||'',
+    content:e.querySelector('.expense-content')?.value.trim()||'',
+    amount:Number(e.querySelector('.expense-amount')?.value)||0
+  })).filter(x=>x.date||x.category||x.content||x.amount);
+  return {name:document.getElementById('name').value.trim(),start:document.getElementById('start').value,end:document.getElementById('end').value,status:document.querySelector('input[name="status"]:checked')?.nextElementSibling?.textContent.includes('予定')?'planned':'done',prefectures:[...chosen],itinerary,expenses};
+}
+function getStoredTrips(){try{const x=JSON.parse(localStorage.getItem('nakamurakeTrips')||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+function saveStoredTrips(list){localStorage.setItem('nakamurakeTrips',JSON.stringify(list))}
+function editId(){return new URLSearchParams(location.search).get('edit')}
+function loadEditTrip(){
+  const id=editId(); if(!id) return;
+  const trip=getStoredTrips().find(x=>x.id===id); if(!trip) return;
+  document.title='なかむら家の旅きろく｜旅行を編集';
+  document.querySelector('header p').textContent='— 旅行を編集 —';
+  document.querySelector('.submit').textContent='✨ この旅を保存';
+  document.getElementById('name').value=trip.name||'';
+  document.getElementById('start').value=trip.start||'';
+  document.getElementById('end').value=trip.end||'';
+  const radios=[...document.querySelectorAll('input[name="status"]')];
+  radios.forEach(r=>r.checked=(r.nextElementSibling?.textContent.includes('予定')) ? trip.status==='planned' : trip.status!=='planned');
+  chosen=[...(trip.prefectures||[])]; render();
+  const days=document.getElementById('days'); days.innerHTML=''; n=0;
+  (trip.itinerary||[]).forEach((it,i)=>{
+    n=i+1; const d=document.createElement('div'); d.className='day';
+    d.innerHTML=`<div class="day-title">日程 ${n}</div><div class="field">日付</div><input type="date" class="dd" value="${it.date||''}"><div class="field">📍 場所</div><input type="text" class="day-place" placeholder="例：盛岡市・盛岡城跡周辺" value="${String(it.place||'').replace(/"/g,'&quot;')}"><div class="field">💬 一言コメント</div><textarea class="day-comment" placeholder="例：長男、わんこそば121杯！✨">${it.comment||''}</textarea><br><button class="remove" onclick="this.parentElement.remove()">この日程を削除</button>`;
+    days.appendChild(d);
+  });
+  if(!days.children.length){addDay();}
+  const ex=document.getElementById('expenses'); ex.innerHTML='';
+  (trip.expenses||[]).forEach((it)=>{
+    const e=document.createElement('div'); e.className='expense';
+    e.innerHTML=`<div class="expensegrid"><div><div class="field">日付</div><input type="date" class="expense-date" value="${it.date||''}"></div><div><div class="field">カテゴリ</div><select class="expense-category"><option value="">選択</option><option>交通</option><option>宿泊</option><option>食事</option><option>観光</option><option>お土産</option></select></div><div class="full"><div class="field">内容</div><input type="text" class="expense-content" value="${String(it.content||'').replace(/"/g,'&quot;')}"></div><div class="full"><div class="field">金額</div><input type="number" class="expense-amount" min="0" inputmode="numeric" value="${it.amount||''}" oninput="updateTotal()"></div></div><br><button class="remove" onclick="this.parentElement.remove();updateTotal()">この支出を削除</button>`;
+    ex.appendChild(e); e.querySelector('.expense-category').value=it.category||'';
+  });
+  if(!ex.children.length) addExpense();
+  updateTotal();
+}
+function check(){
+  const nm=document.getElementById('name').value.trim(), st=document.getElementById('start').value, en=document.getElementById('end').value;
+  if(!nm||!st||!en||!chosen.length){alert('旅行名・開始日・終了日・都道府県を入力してください👀');return}
+  if(en<st){alert('終了日は開始日以降にしてください👀');return}
+  const trip=collectTrip();
+  const list=getStoredTrips(); const id=editId();
+  if(id){
+    const i=list.findIndex(x=>x.id===id); if(i>=0) list[i]={...list[i],...trip,updatedAt:new Date().toISOString()};
+    saveStoredTrips(list); alert('旅行記録を更新しました✨'); location.href='index.html?updated=1';
+  }else{
+    const item={id:'trip-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),...trip,createdAt:new Date().toISOString()};
+    list.push(item); saveStoredTrips(list); alert('旅行を登録しました✨'); location.href='index.html?registered=1';
+  }
+}
+loadEditTrip();
 </script>
 </body></html>
