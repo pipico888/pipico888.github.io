@@ -38,13 +38,13 @@ a{-webkit-tap-highlight-color:transparent}
 .year-section{display:none;margin-top:26px}
 #y2023:target,#y2024:target,#y2025:target,#y2026:target,#y2027:target{display:block}
 .intro{color:#668594;text-align:center;padding:24px 8px;font-size:17px;line-height:1.9}
-.section-heading{margin:4px 6px 18px;font-size:27px;font-weight:900;color:#064f86;padding-bottom:12px;border-bottom:1px solid #cfe8ef;position:relative}
+.section-heading{margin:4px 6px 18px;font-size:27px;font-weight:700;color:#064f86;padding-bottom:12px;border-bottom:1px solid #cfe8ef;position:relative}
 .section-heading:after{content:"";position:absolute;left:0;bottom:-2px;width:70px;height:5px;border-radius:5px;background:#ffbda9}
 
 .trip{display:grid;grid-template-columns:245px 1fr auto;align-items:center;gap:22px;text-decoration:none;color:#075887;background:rgba(255,255,255,.95);border:1px solid rgba(104,185,204,.20);border-radius:19px;padding:14px;box-shadow:0 7px 24px rgba(0,108,132,.08)}
 .trip-photo{width:100%;height:145px;object-fit:cover;border-radius:11px}.trip-placeholder{display:grid;place-items:center;background:linear-gradient(135deg,#dff2f7,#ffe2d8);color:#075887;font-size:58px}.trip-placeholder span{filter:drop-shadow(0 3px 4px rgba(0,108,132,.12))}
 .trip-info{min-width:0}
-.trip-name{font-size:25px;font-weight:900;color:#075887;margin-bottom:9px}
+.trip-name{font-size:25px;font-weight:700;color:#075887;margin-bottom:9px}
 .badge{display:inline-block;margin-left:8px;padding:5px 10px;border-radius:7px;background:#ffb59e;color:#fff;font-size:13px;vertical-align:middle}
 .meta{color:#165f8b;font-size:15px;line-height:1.9}
 .total{min-width:170px;padding:13px 15px;border-radius:13px;background:#ffe2d8;color:#075887;text-align:center}
@@ -215,7 +215,6 @@ tr:last-child td{border-bottom:0}
 #allTrips .trip.hidden{display:none}
 .no-results{display:none;background:#fff;border-radius:18px;padding:24px;text-align:center;color:#718587;border:1px solid rgba(104,185,204,.20)}
 </style>
-<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style id="system-font">
 /* 一覧・詳細・登録画面でフォントを統一：M PLUS 1p */
 html, body, body * {
@@ -237,12 +236,12 @@ html, body, body * {
 .nojs-fallback-note{font-size:13px;color:#849293;margin:0 2px 4px;}
 .nojs-fallback-list .trip{width:100%;}
 </style><style id="user-trip-style">
-.user-trip-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.user-trip-actions{display:none !important}
 .user-trip-actions button{border:0;border-radius:999px;padding:6px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .user-trip-edit{background:#e7f4f6;color:#006C84}
 .user-trip-delete{background:#fff0ec;color:#a65c49}
 .user-trip-note{font-size:11px;color:#849293;margin-top:5px}
-.static-trip-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.static-trip-actions{display:none !important}
 .static-trip-actions button{border:0;border-radius:999px;padding:6px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .static-trip-edit{background:#e7f4f6;color:#006C84}
 .static-trip-delete{background:#fff0ec;color:#a65c49}
@@ -288,6 +287,18 @@ html, body, body * {
   #allTrips .trip .prefecture-tags{margin-top:7px;}
 }
 </style><style id="trip-top-total-hide">#allTrips > .trip > .total{display:none !important;}
+</style><style id="detail-action-style">
+.detail-card{position:relative;}
+.detail-card h2{padding-right:96px;}
+.detail-actions{position:absolute;top:16px;right:16px;display:flex;gap:7px;z-index:3;}
+.detail-action{width:38px;height:38px;border:0;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:0 3px 10px rgba(0,108,132,.10);font-size:20px;line-height:1;cursor:pointer;padding:0;}
+.detail-action-edit{color:#006C84;border:1px solid #cde6eb;}
+.detail-action-delete{color:#a65c49;border:1px solid #f0d8d0;}
+.detail-action:active{transform:translateY(1px);}
+.detail.user-detail:target{display:block;}
+.user-detail .detail-card{margin-top:0;}
+.user-detail .user-detail-note{font-size:11px;color:#849293;margin-top:7px;}
+@media(max-width:520px){.detail-card h2{padding-right:86px}.detail-actions{top:13px;right:13px}.detail-action{width:36px;height:36px;font-size:19px;}}
 </style><style id="detail-font-design-rule">
 /* 画面全体は M PLUS 1p。英字タイトル「Trip Detail」だけ元のフォントを固定。 */
 .detail,
@@ -612,20 +623,15 @@ html, body, body * {
   const tripMonth=(t)=>{ const d=t.start||''; return d ? d.slice(0,7) : ''; };
   const sortKey=(t)=>Number((t.start||'').replace(/-/g,''))||0;
   const makeCard=(t)=>{
-    const card=document.createElement('div');
+    const detailId='usertrip-'+String(t.id).replace(/[^a-zA-Z0-9_-]/g,'_');
+    const card=document.createElement('a');
     card.className='trip user-trip'+(t.status==='planned'?' planned-trip':'');
+    card.href='#'+detailId;
     card.dataset.sort=sortKey(t); card.dataset.status=t.status||'done'; card.dataset.year=(t.start||'').slice(0,4); card.dataset.userTripId=t.id;
     const statusText=t.status==='planned'?'予定':'行った✨';
     const prefs=(t.prefectures||[]).map(p=>`<span class="prefecture-tag">${esc(p.replace(/都|府|県$/,''))}</span>`).join('');
     const period=t.start&&t.end ? (t.start===t.end ? fmtDate(t.start) : fmtDate(t.start)+'〜'+fmtDate(t.end)) : tripMonth(t)+(t.status==='planned'?'（予定）':'');
-    card.innerHTML=`<div class="trip-photo trip-placeholder"><span>🧳</span></div><div class="trip-info"><div class="trip-name">${esc(t.name)} <span class="badge">${statusText}</span></div><div class="meta">▣ ${esc(period)}</div><div class="prefecture-tags">${prefs}</div><div class="user-trip-actions"><button type="button" class="user-trip-edit">編集</button><button type="button" class="user-trip-delete">削除</button></div><div class="user-trip-note">この端末に保存した旅行記録</div></div>`;
-    card.querySelector('.user-trip-edit').addEventListener('click',()=>{ location.href='trip-registration.html?edit='+encodeURIComponent(t.id); });
-    card.querySelector('.user-trip-delete').addEventListener('click',()=>{
-      if(!confirm('「'+t.name+'」を削除しますか？\nこの操作は元に戻せません。')) return;
-      const next=trips.filter(x=>x.id!==t.id);
-      localStorage.setItem(KEY,JSON.stringify(next));
-      location.reload();
-    });
+    card.innerHTML=`<div class="trip-photo trip-placeholder"><span>🧳</span></div><div class="trip-info"><div class="trip-name">${esc(t.name)} <span class="badge">${statusText}</span></div><div class="meta">▣ ${esc(period)}</div><div class="prefecture-tags">${prefs}</div><div class="user-trip-note">この端末に保存した旅行記録</div></div><div class="arrow">›</div>`;
     return card;
   };
   trips.sort((a,b)=>sortKey(b)-sortKey(a));
@@ -687,6 +693,7 @@ document.addEventListener("DOMContentLoaded", function(){
     })).filter(x=>x.date||x.place||x.comment);
     return {id:'legacy-'+target.id,name,start:dates.start,end:dates.end,status:card.dataset.status==='planned'?'planned':'done',prefectures,itinerary,expenses,legacySection:target.id};
   }
+  window.nakamurakeReadLegacyTrip=readLegacyTrip;
   function stored(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
   function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
   const deletedKey='nakamurakeDeletedLegacyTrips';
@@ -720,6 +727,86 @@ document.addEventListener("DOMContentLoaded", function(){
       card.remove();
       window.dispatchEvent(new Event('travelListChanged'));
     });
+  });
+});
+</script>
+<script id="detail-page-actions-script">
+document.addEventListener("DOMContentLoaded", function(){
+  const KEY='nakamurakeTrips';
+  const deletedKey='nakamurakeDeletedLegacyTrips';
+  const wrap=document.querySelector('.wrap');
+  const allTrips=document.getElementById('allTrips');
+  if(!wrap || !allTrips) return;
+  const esc=(v)=>String(v??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const pad=n=>String(n).padStart(2,'0');
+  const fmtDate=(d)=>{ if(!d) return ''; const a=String(d).split('-'); return a.length===3 ? `${a[0]}年${Number(a[1])}月${Number(a[2])}日` : String(d); };
+  const fmtPeriod=(t)=>t.start&&t.end ? (t.start===t.end?fmtDate(t.start):fmtDate(t.start)+'〜'+fmtDate(t.end)) : '';
+  const detailId=(id)=>'usertrip-'+String(id).replace(/[^a-zA-Z0-9_-]/g,'_');
+  const catClass={交通:'cat-transport',宿泊:'cat-stay',食事:'cat-food',観光:'cat-sightseeing',お土産:'cat-souvenir'};
+  const catIcon={交通:'transport',宿泊:'stay',食事:'food',観光:'sightseeing',お土産:'souvenir'};
+  const yen=(n)=>Number(n||0).toLocaleString('ja-JP')+'円';
+  function getStored(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  function saveStored(x){localStorage.setItem(KEY,JSON.stringify(x));}
+  function getDeleted(){try{const x=JSON.parse(localStorage.getItem(deletedKey)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  function makeActions(detail, tripId, legacyId){
+    if(detail.querySelector('.detail-actions')) return;
+    const box=document.createElement('div'); box.className='detail-actions';
+    box.innerHTML='<button type="button" class="detail-action detail-action-edit" aria-label="旅行を編集" title="編集">✏︎</button><button type="button" class="detail-action detail-action-delete" aria-label="旅行を削除" title="削除">×</button>';
+    detail.querySelector('.detail-card')?.prepend(box);
+    box.querySelector('.detail-action-edit').addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation();
+      if(legacyId){
+        const card=[...allTrips.querySelectorAll('.trip')].find(c=>(c.getAttribute('href')||'')==='#'+detail.id);
+        const trip=window.nakamurakeReadLegacyTrip?window.nakamurakeReadLegacyTrip(card):null;
+        if(!trip){alert('この旅行の編集データを読み込めませんでした。');return;}
+        const list=getStored(); const i=list.findIndex(x=>x.id===trip.id); if(i>=0) list[i]={...list[i],...trip}; else list.push(trip); saveStored(list);
+        location.href='trip-registration.html?edit='+encodeURIComponent(trip.id);
+      }else{
+        location.href='trip-registration.html?edit='+encodeURIComponent(tripId);
+      }
+    });
+    box.querySelector('.detail-action-delete').addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation();
+      const name=detail.querySelector('h2')?.textContent?.trim()||'この旅行';
+      if(!confirm('「'+name+'」を削除しますか？\nこの操作は元に戻せません。')) return;
+      if(legacyId){
+        const a=getDeleted(); if(!a.includes(legacyId)) a.push(legacyId); localStorage.setItem(deletedKey,JSON.stringify(a));
+        const card=[...allTrips.querySelectorAll('.trip')].find(c=>(c.getAttribute('href')||'')==='#'+detail.id);
+        card?.remove(); detail.remove();
+      }else{
+        saveStored(getStored().filter(x=>x.id!==tripId)); detail.remove();
+      }
+      location.href='index.html';
+    });
+  }
+  // Existing/static detail pages
+  document.querySelectorAll('.detail:not(.user-detail)').forEach(detail=>{
+    const card=[...allTrips.querySelectorAll('.trip')].find(c=>(c.getAttribute('href')||'')==='#'+detail.id);
+    if(card) makeActions(detail, '','legacy-'+detail.id);
+  });
+  // User-saved detail pages
+  const trips=getStored();
+  trips.forEach(t=>{
+    const id=detailId(t.id);
+    if(document.getElementById(id)) return;
+    const section=document.createElement('section'); section.className='detail user-detail'; section.id=id;
+    const prefs=(t.prefectures||[]).map(p=>`<span class="prefecture-tag">${esc(String(p).replace(/都|府|県$/,''))}</span>`).join('');
+    const expenses=Array.isArray(t.expenses)?t.expenses:[];
+    const validExpenses=expenses.filter(x=>x && (x.date||x.category||x.content||x.amount));
+    const total=validExpenses.reduce((a,x)=>a+Number(x.amount||0),0);
+    const sums={交通:0,宿泊:0,食事:0,観光:0,お土産:0};
+    validExpenses.forEach(x=>{if(Object.prototype.hasOwnProperty.call(sums,x.category)) sums[x.category]+=Number(x.amount||0);});
+    const stats=Object.entries(sums).filter(([,v])=>v>0).map(([cat,v])=>`<div class="stat ${catClass[cat]||''}"><div class="icon"><span aria-label="${esc(cat)}アイコン" class="category-line-icon category-line-icon-${catIcon[cat]||''}"></span></div><b>${cat}</b><div class="yen">${yen(v)}</div></div>`).join('');
+    const expenseRows=validExpenses.map(x=>`<tr><td>${esc((x.date||'').slice(5).replace('-','/'))}</td><td>${esc(x.content||'')}</td><td><span class="category-pill ${catClass[x.category]||''}">${esc(x.category||'')}</span></td><td class="money">${yen(x.amount)}</td></tr>`).join('');
+    const itinerary=Array.isArray(t.itinerary)?t.itinerary.filter(x=>x && (x.date||x.place||x.comment)):[];
+    const days=itinerary.map(x=>`<div class="itinerary-day"><div class="itinerary-date">${esc((x.date||'').slice(5).replace('-','/'))}</div><div class="itinerary-content"><div class="itinerary-place"><div class="itinerary-location"><span class="location-pin">📍</span>${esc(x.place||'')}</div></div><div class="itinerary-comment"><span class="comment-icon">💬</span>${esc(x.comment||'')}</div></div></div>`).join('');
+    const expenseBlock=validExpenses.length?`<div class="grand"><span class="grand-label">旅行費用 合計</span><strong>${yen(total)}</strong></div>${stats?`<div class="stats">${stats}</div>`:''}<div class="section">▣ 支出明細</div><table><thead><tr><th>日付</th><th>内容</th><th>カテゴリ</th><th class="money">金額</th></tr></thead><tbody>${expenseRows}</tbody></table>`:'';
+    const itineraryBlock=itinerary.length?`<details class="itinerary-fold"><summary>旅程</summary><div class="itinerary-summary"><div class="itinerary-summary-title">旅程</div><div class="itinerary-list">${days}</div></div></details>`:'';
+    const status=t.status==='planned'?'予定':'行った✨';
+    const year=(t.start||'').slice(0,4)||new Date().getFullYear();
+    section.innerHTML=`<div class="detail-head"><a class="back" href="index.html">‹ 一覧に戻る</a><div class="detail-title">Trip Detail</div><div class="detail-sub">— 旅行の詳細 —</div></div><div class="detail-card"><h2>${esc(t.name||'旅行')}</h2><div class="meta">▣ ${esc(fmtPeriod(t))}</div><div class="meta">${status}</div><div class="prefecture-tags">${prefs}</div><div class="user-detail-note">この端末に保存した旅行記録</div>${expenseBlock}${itineraryBlock}</div>`;
+    wrap.appendChild(section);
+    makeActions(section,t.id,'');
   });
 });
 </script>
