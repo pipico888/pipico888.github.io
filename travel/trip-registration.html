@@ -9,7 +9,7 @@
 *{box-sizing:border-box}body{margin:0;background:#f7faf9;color:var(--text);font-family:"M PLUS 1p","Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic",Meiryo,sans-serif;line-height:1.6}
 header{background:linear-gradient(180deg,#d9f1fb,#edf9fd);color:#075887;text-align:center;padding:28px 16px 18px}
 header h1{margin:0;font-family:"Segoe Print","Bradley Hand","Hiragino Maru Gothic ProN",cursive;font-size:48px;line-height:1.05;color:#008ac0;font-weight:500}header p{margin:8px 0 0;font-size:18px;color:#075887}
-main{max-width:680px;margin:auto;padding:18px 14px 90px}.card{background:#fff;border-radius:18px;padding:18px 16px;margin-bottom:14px;box-shadow:0 3px 14px #006c8417}
+main{max-width:680px;margin:auto;padding:18px 14px 145px}.card{background:#fff;border-radius:18px;padding:18px 16px;margin-bottom:14px;box-shadow:0 3px 14px #006c8417}
 h2{margin:0 0 15px;color:var(--deep);font-size:17px;border-left:5px solid var(--peach);padding-left:9px}
 label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
 input,select,textarea,button{font:inherit}input[type=text],input[type=date],input[type=number],select,textarea{width:100%;border:1px solid #cddddd;border-radius:11px;padding:10px 11px;color:var(--text);background:#fff}textarea{min-height:72px}
@@ -19,7 +19,7 @@ input,select,textarea,button{font:inherit}input[type=text],input[type=date],inpu
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{background:var(--deep);color:#fff;border-radius:999px;padding:4px 9px;font-size:12px}.chip button{border:0;background:none;color:#fff;padding:0 0 0 4px}
 .day,.expense{position:relative;border:1px solid #dbe7e6;border-radius:14px;padding:12px;margin-top:10px;background:#fbfdfc}.day-title{font-weight:bold;color:var(--deep);font-size:14px}.field{font-size:12px;font-weight:bold;margin:8px 0 3px}
 .add,.remove,.submit{border:0;border-radius:999px;padding:9px 14px}.add{background:var(--ice);color:var(--deep);margin-top:10px}.remove{background:#f4e3dd;color:#a06b5c;font-size:12px}.remove-icon{position:absolute;top:10px;right:10px;width:30px;height:30px;padding:0;border:1px solid #efcfc5;border-radius:50%;background:#fff4ef;color:#a06b5c;font-size:20px;line-height:28px;text-align:center;cursor:pointer}.remove-icon:hover{background:#f4e3dd}.expensegrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.full{grid-column:1/-1}.expense-total{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:10px;border-radius:13px;background:#dff2f7;color:#075887}.expense-total strong{font-size:19px}.note{font-size:11px;color:#849293;margin-top:5px}
-footer{position:fixed;left:0;right:0;bottom:0;background:#f7faf9ee;padding:10px 14px 14px;border-top:1px solid #e1eceb}.submit{width:100%;background:var(--deep);color:#fff;font-weight:bold;font-size:16px}
+footer{position:fixed;left:0;right:0;bottom:0;background:#f7faf9ee;padding:10px 14px 14px;border-top:1px solid #e1eceb;z-index:20}.footer-actions{display:flex;flex-direction:column;gap:8px}.submit,.cancel{width:100%;min-height:48px;border:1px solid transparent;border-radius:999px;font-weight:bold;font-size:14px;line-height:1.4}.submit{background:var(--deep);color:#fff;border-color:var(--deep)}.cancel{background:#edf8fa;color:var(--deep);border-color:var(--blue)}
 @media(max-width:430px){.row,.expensegrid{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
 <style id="calendar-add-style">
@@ -87,7 +87,7 @@ input[type="date"]{display:block;min-width:0;max-width:100%;width:100%;height:46
 <div class="note">支出がない場合は、そのまま登録できます。カテゴリごとの色で、旅費の内訳も見やすく整理できます✨</div>
 </section>
 </main>
-<footer><button class="submit" onclick="check()">✨ この旅を登録</button></footer>
+<footer><div class="footer-actions"><button type="button" class="submit" onclick="check()">✨ この旅を登録</button><button type="button" class="cancel" onclick="cancelRegistration()">キャンセル</button></div></footer>
 <script>
 const P=["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"];
 let chosen=[],n=1;
@@ -209,6 +209,17 @@ function loadEditTrip(){
   });
   if(!ex.children.length) addExpense();
   updateTotal();
+}
+function cancelRegistration(){
+  const id=editId();
+  if(!id){ location.href='index.html'; return; }
+  const trip=getStoredTrips().find(x=>x.id===id);
+  if(id.startsWith('legacy-') && trip?.legacySection){
+    location.href='index.html#'+trip.legacySection;
+    return;
+  }
+  const safeId=String(id).replace(/[^a-zA-Z0-9_-]/g,'_');
+  location.href='index.html#usertrip-'+safeId;
 }
 function check(){
   const nm=document.getElementById('name').value.trim(), st=document.getElementById('start').value, en=document.getElementById('end').value;
