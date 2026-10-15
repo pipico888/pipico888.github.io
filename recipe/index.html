@@ -951,6 +951,18 @@ fill="var(--red)" stroke="none"/>
   </section>
 </section>
 
+
+<section id="recipeBackupSection" class="card" style="margin-top:20px;padding:22px;border:2px dashed #cbded0;border-radius:22px;background:#f8fbf8;">
+  <h2 style="margin:0 0 12px;color:#666;font-size:20px;">🛟 レシピデータのバックアップ</h2>
+  <p style="margin:0 0 16px;color:#777;font-size:14px;line-height:1.8;">登録内容をファイルに保存できます。書き出したファイルは「ファイル」アプリなど、このアプリの外にも保存してください。</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <button id="exportRecipesButton" type="button" style="flex:1;min-width:145px;padding:14px 10px;border:2px solid #67baca;border-radius:18px;background:#eaf5f7;color:#4b8290;font-weight:700;font-size:15px;">⬇ データを書き出す</button>
+    <button id="importRecipesButton" type="button" style="flex:1;min-width:145px;padding:14px 10px;border:2px solid #67baca;border-radius:18px;background:#fff;color:#4b8290;font-weight:700;font-size:15px;">⬆ バックアップを読み込む</button>
+  </div>
+  <input id="importRecipesFile" type="file" accept=".json,application/json" style="display:none;">
+  <p id="backupMessage" role="status" aria-live="polite" style="margin:12px 0 0;color:#777;font-size:13px;line-height:1.7;"></p>
+</section>
+
 </main>
 
 <script>
@@ -1297,6 +1309,59 @@ document.querySelectorAll(".filter-button").forEach(button => {
 document.getElementById("recipeList").addEventListener("click", event => {
   const button = event.target.closest('[data-action="cook"]');
   if (button) cookRecipe(button.dataset.id);
+});
+
+
+// バックアップ：現在この画面から読み取れるレシピをJSONファイルに保存する
+document.getElementById("exportRecipesButton").addEventListener("click", async () => {
+  const message = document.getElementById("backupMessage");
+  const button = document.getElementById("exportRecipesButton");
+  button.disabled = true;
+  message.textContent = "バックアップを準備しています…";
+  try {
+    const recipes = await loadRecipes();
+    const backup = { app: "MY RECIPE BOOK", formatVersion: 1, exportedAt: new Date().toISOString(), recipes };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `my-recipe-book-backup-${todayISO()}.json`;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    message.textContent = `✨ ${recipes.length}件のレシピを書き出しました。保存されたJSONファイルを「ファイル」アプリで確認してください。`;
+  } catch (error) {
+    console.error("バックアップ書き出しエラー", error);
+    message.textContent = "⚠️ 書き出しに失敗しました。もう一度お試しください。";
+  } finally { button.disabled = false; }
+});
+
+const importRecipesButton = document.getElementById("importRecipesButton");
+const importRecipesFile = document.getElementById("importRecipesFile");
+importRecipesButton.addEventListener("click", () => importRecipesFile.click());
+importRecipesFile.addEventListener("change", async () => {
+  const message = document.getElementById("backupMessage");
+  const file = importRecipesFile.files && importRecipesFile.files[0];
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    const recipes = Array.isArray(parsed) ? parsed : parsed.recipes;
+    if (!Array.isArray(recipes) || !recipes.every(r => r && typeof r === "object" && typeof r.name === "string")) {
+      throw new Error("バックアップの形式が違います。");
+    }
+    const current = await loadRecipes();
+    if (!window.confirm(`バックアップの${recipes.length}件で、現在の${current.length}件を置き換えます。
+現在のデータを別途保存してあることを確認してください。
+読み込みますか？`)) {
+      message.textContent = "読み込みをキャンセルしました。現在のレシピは変更していません。";
+      return;
+    }
+    await saveRecipes(recipes);
+    message.textContent = `✨ ${recipes.length}件を読み込みました。`;
+    await renderList();
+  } catch (error) {
+    console.error("バックアップ読み込みエラー", error);
+    message.textContent = "⚠️ 読み込めませんでした。MY RECIPE BOOKのバックアップJSONか確認してください。";
+  } finally { importRecipesFile.value = ""; }
 });
 
 renderList();
