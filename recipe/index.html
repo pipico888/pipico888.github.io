@@ -546,6 +546,70 @@
     line-height: 1.35;
   }
 
+  .recipe-actions {
+    display: flex;
+    gap: 5px;
+    flex: 0 0 auto;
+  }
+
+  .icon-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #d9e9df;
+    border-radius: 10px;
+    background: #fff;
+    color: #7b9183;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .icon-action.delete { color: #d66b6b; }
+
+  .recipe-description {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 13px;
+    background: #f8fbf8;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  .recipe-link { display: block; color: #4b8290; text-decoration: underline; margin-bottom: 5px; }
+  .recipe-memo { white-space: pre-wrap; color: #777; }
+
+  .recipe-button-row { display: flex; gap: 9px; margin-top: 13px; }
+  .recipe-button-row .cook-button { width: auto; flex: 1; margin-top: 0; }
+  .later-button {
+    flex: 1;
+    border: 2px solid #67baca;
+    border-radius: 14px;
+    padding: 10px 8px;
+    background: #eaf5f7;
+    color: #4b8290;
+    font-family: "メイリオ", Meiryo, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .later-button:disabled { opacity: .55; cursor: default; }
+  .form-cancel-button {
+    display: none;
+    width: 100%;
+    margin-top: 9px;
+    border: 2px solid #d9e9df;
+    border-radius: 14px;
+    padding: 10px;
+    background: #fff;
+    color: #777;
+    font-weight: 700;
+  }
+
   .sleep-badge {
     flex: 0 0 auto;
     border-radius: 999px;
@@ -887,6 +951,7 @@ fill="var(--red)" stroke="none"/>
         </svg>
         <span>レシピを登録する</span>
       </button>
+      <button id="cancelEditButton" class="form-cancel-button" type="button">編集をキャンセル</button>
 
       <div id="successMessage" class="success">
         ✨ レシピを登録しました！
@@ -967,7 +1032,7 @@ fill="var(--red)" stroke="none"/>
 
 <script>
 /*
-  MY RECIPE BOOK v6
+  MY RECIPE BOOK v7
   - データ保存をIndexedDBに変更
   - IndexedDBが使えない環境ではlocalStorageへ自動フォールバック
   - 旧v5のlocalStorageデータがあれば初回起動時にIndexedDBへ移行
@@ -978,6 +1043,7 @@ const DB_VERSION = 1;
 const STORE_NAME = "recipes";
 let activeFilter = "all";
 let dbPromise = null;
+let editingRecipeId = null;
 
 const registerPage = document.getElementById("registerPage");
 const listPage = document.getElementById("listPage");
@@ -1104,10 +1170,11 @@ document.querySelectorAll(".nav-button").forEach(button => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-
   const recipes = await loadRecipes();
+  const existing = editingRecipeId ? recipes.find(item => item.id === editingRecipeId) : null;
   const recipe = {
-    id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+    ...(existing || {}),
+    id: existing?.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
     name: document.getElementById("recipeName").value.trim(),
     url: document.getElementById("recipeUrl").value.trim(),
     memo: document.getElementById("recipeMemo").value.trim(),
@@ -1118,10 +1185,15 @@ form.addEventListener("submit", async (event) => {
       kotaro: document.querySelector('input[name="kotaro"]:checked')?.value || "",
       yamato: document.querySelector('input[name="yamato"]:checked')?.value || ""
     },
-    cookingHistory: [todayISO()]
+    cookingHistory: Array.isArray(existing?.cookingHistory) ? existing.cookingHistory : [todayISO()]
   };
 
-  recipes.push(recipe);
+  if (existing) {
+    const index = recipes.findIndex(item => item.id === editingRecipeId);
+    recipes[index] = recipe;
+  } else {
+    recipes.push(recipe);
+  }
 
   try {
     await saveRecipes(recipes);
@@ -1131,13 +1203,70 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  form.reset();
-  successMessage.textContent = "✨ レシピを登録しました！";
+  const wasEditing = Boolean(existing);
+  resetRecipeForm();
+  successMessage.textContent = wasEditing ? "✨ レシピを更新しました！" : "✨ レシピを登録しました！";
   successMessage.style.display = "block";
-
-  // 登録完了後はすぐ一覧へ
   showPage("listPage");
 });
+
+function resetRecipeForm() {
+  editingRecipeId = null;
+  form.reset();
+  document.querySelector('input[name="cookPerson"][value=""]')?.click();
+  const heading = form.querySelector('.section-title span:last-child');
+  if (heading) heading.textContent = "レシピを登録";
+  const submitText = form.querySelector('.register-button span');
+  if (submitText) submitText.textContent = "レシピを登録する";
+  document.getElementById("cancelEditButton").style.display = "none";
+}
+
+async function editRecipe(id) {
+  const recipes = await loadRecipes();
+  const recipe = recipes.find(item => item.id === id);
+  if (!recipe) return;
+  editingRecipeId = id;
+  document.getElementById("recipeName").value = recipe.name || "";
+  document.getElementById("recipeUrl").value = recipe.url || "";
+  document.getElementById("recipeMemo").value = recipe.memo || "";
+  document.querySelectorAll('input[name="cookPerson"]').forEach(input => input.checked = input.value === (recipe.cookPerson || ""));
+  const ratings = recipe.ratings || {};
+  [['kaori', ratings.kaori], ['takamitsu', ratings.takamitsu], ['kotaro', ratings.kotaro], ['yamato', ratings.yamato]].forEach(([name, value]) => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = input.value === (value || ""));
+  });
+  const heading = form.querySelector('.section-title span:last-child');
+  if (heading) heading.textContent = "レシピを編集";
+  const submitText = form.querySelector('.register-button span');
+  if (submitText) submitText.textContent = "変更を保存する";
+  document.getElementById("cancelEditButton").style.display = "block";
+  successMessage.style.display = "none";
+  showPage("registerPage");
+}
+
+document.getElementById("cancelEditButton").addEventListener("click", () => {
+  resetRecipeForm();
+  showPage("listPage");
+});
+
+async function deleteRecipe(id) {
+  const recipes = await loadRecipes();
+  const recipe = recipes.find(item => item.id === id);
+  if (!recipe) return;
+  if (!window.confirm(`「${recipe.name || "名前なし"}」を本当に削除しますか？\n削除したレシピは元に戻せません。`)) return;
+  await saveRecipes(recipes.filter(item => item.id !== id));
+  await renderList();
+}
+
+async function postponeRecipe(id) {
+  const recipes = await loadRecipes();
+  const recipe = recipes.find(item => item.id === id);
+  if (!recipe) return;
+  const base = parseISODate(todayISO());
+  base.setDate(base.getDate() + 30);
+  recipe.postponedUntil = `${base.getFullYear()}-${String(base.getMonth()+1).padStart(2,"0")}-${String(base.getDate()).padStart(2,"0")}`;
+  await saveRecipes(recipes);
+  await renderList();
+}
 
 function parseISODate(value) {
   if (!value) return null;
@@ -1179,8 +1308,15 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function isPostponed(recipe) {
+  return Boolean(recipe.postponedUntil && recipe.postponedUntil > todayISO());
+}
+
 function sortRecipes(recipes) {
   return [...recipes].sort((a, b) => {
+    const aPostponed = isPostponed(a);
+    const bPostponed = isPostponed(b);
+    if (aPostponed !== bPostponed) return aPostponed ? 1 : -1;
     const da = daysSince(latestDate(a));
     const db = daysSince(latestDate(b));
     return (db ?? -1) - (da ?? -1);
@@ -1201,7 +1337,7 @@ async function renderList() {
   if (activeFilter === "stale") {
     recipes = recipes.filter(recipe => {
       const days = daysSince(latestDate(recipe));
-      return days !== null && days >= 30;
+      return days !== null && days >= 30 && !isPostponed(recipe);
     });
   }
 
@@ -1233,34 +1369,39 @@ async function renderList() {
   list.innerHTML = recipes.map(recipe => {
     const latest = latestDate(recipe);
     const days = daysSince(latest);
-    const stale = days !== null && days >= 30;
-    const ratings = recipe.ratings || {};
+    const postponed = isPostponed(recipe);
+    const stale = days !== null && days >= 30 && !postponed;
     const today = todayISO();
     const cookedToday = Array.isArray(recipe.cookingHistory) && recipe.cookingHistory.includes(today);
+    const url = String(recipe.url || "").trim();
+    const safeUrl = /^https?:\/\//i.test(url) ? url : "";
 
     return `
       <article class="recipe-card">
         <div class="recipe-top">
           <h3 class="recipe-name">${escapeHtml(recipe.name || "名前なし")}</h3>
-          ${stale ? `<span class="sleep-badge">💤 ${days}日作ってない</span>` : ""}
+          <div class="recipe-actions">
+            <button class="icon-action" type="button" data-action="edit" data-id="${escapeHtml(recipe.id)}" aria-label="編集" title="編集">✏️</button>
+            <button class="icon-action delete" type="button" data-action="delete" data-id="${escapeHtml(recipe.id)}" aria-label="削除" title="削除">×</button>
+          </div>
         </div>
-
+        ${stale ? `<span class="sleep-badge">💤 ${days}日作ってない</span>` : ""}
+        ${postponed ? `<div class="hint">👀 ${formatDate(recipe.postponedUntil)}までお休み中</div>` : ""}
         <div class="recipe-meta">
           <span>🍳 <strong>${cookingCount(recipe)}回</strong> 作った</span>
           <span>最新：<strong>${formatDate(latest)}</strong></span>
-          ${recipe.cookPerson ? `<span>つくる人：<strong>${escapeHtml(recipe.cookPerson)}</strong></span>` : ""}
         </div>
-
-        <div class="ratings">
-          ${ratingPill("かおり", ratings.kaori)}
-          ${ratingPill("たかみつ", ratings.takamitsu)}
-          ${ratingPill("こたろう", ratings.kotaro)}
-          ${ratingPill("やまと", ratings.yamato)}
+        ${(safeUrl || recipe.memo) ? `
+          <div class="recipe-description">
+            ${safeUrl ? `<a class="recipe-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">🔗 レシピを見る</a>` : ""}
+            ${recipe.memo ? `<div class="recipe-memo">${escapeHtml(recipe.memo)}</div>` : ""}
+          </div>` : ""}
+        <div class="recipe-button-row">
+          <button class="cook-button ${cookedToday ? "done" : ""}" type="button" data-action="cook" data-id="${escapeHtml(recipe.id)}">
+            ${cookedToday ? "✓ 今日作った" : "作った🧑‍🍳✨"}
+          </button>
+          <button class="later-button" type="button" data-action="postpone" data-id="${escapeHtml(recipe.id)}">まだいいかな👀</button>
         </div>
-
-        <button class="cook-button ${cookedToday ? "done" : ""}" type="button" data-action="cook" data-id="${escapeHtml(recipe.id)}">
-          ${cookedToday ? "✓ 今日作った" : "作った🧑‍🍳✨"}
-        </button>
       </article>
     `;
   }).join("");
@@ -1292,6 +1433,7 @@ async function cookRecipe(id) {
   }
 
   recipe.cookingHistory.push(today);
+  delete recipe.postponedUntil;
   recipe.lastCookButtonAction = { date: today, added: true };
   await saveRecipes(recipes);
   renderList();
@@ -1307,8 +1449,13 @@ document.querySelectorAll(".filter-button").forEach(button => {
 });
 
 document.getElementById("recipeList").addEventListener("click", event => {
-  const button = event.target.closest('[data-action="cook"]');
-  if (button) cookRecipe(button.dataset.id);
+  const button = event.target.closest("[data-action]");
+  if (!button) return;
+  const { action, id } = button.dataset;
+  if (action === "cook") cookRecipe(id);
+  if (action === "edit") editRecipe(id);
+  if (action === "delete") deleteRecipe(id);
+  if (action === "postpone") postponeRecipe(id);
 });
 
 
