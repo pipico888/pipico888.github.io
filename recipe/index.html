@@ -556,17 +556,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 19px;
-    height: 19px;
-    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    flex: 0 0 23px;
     color: #4b8290;
+    overflow: visible;
     text-decoration: none;
     vertical-align: middle;
   }
   .recipe-link-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     display: block;
+    overflow: visible;
   }
   .recipe-link-icon svg path {
     fill: none;
@@ -605,7 +607,7 @@
     width: 19px;
     height: 19px;
     display: block;
-    transform: rotate(50deg);
+    transform: rotate(95deg);
     transform-origin: center;
   }
   .icon-action.edit svg path,
@@ -1429,7 +1431,7 @@ async function renderList() {
         <div class="recipe-top">
           <h3 class="recipe-name">
             <span>${escapeHtml(recipe.name || "名前なし")}</span>
-            ${safeUrl ? `<a class="recipe-link-icon" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="レシピを見る" title="レシピを見る"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.8 14.2 14.2 9.8"/><path d="M8.1 16.1 6.7 17.5a4 4 0 0 1-5.7-5.7l4.2-4.2a4 4 0 0 1 5.7 0"/><path d="m15.9 7.9 1.4-1.4a4 4 0 0 1 5.7 5.7l-4.2 4.2a4 4 0 0 1-5.7 0"/></svg></a>` : ""}
+            ${safeUrl ? `<a class="recipe-link-icon" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="レシピを見る" title="レシピを見る"><svg viewBox="-2 -2 28 28" aria-hidden="true" focusable="false"><path d="M9.8 14.2 14.2 9.8"/><path d="M8.1 16.1 6.7 17.5a4 4 0 0 1-5.7-5.7l4.2-4.2a4 4 0 0 1 5.7 0"/><path d="m15.9 7.9 1.4-1.4a4 4 0 0 1 5.7 5.7l-4.2 4.2a4 4 0 0 1-5.7 0"/></svg></a>` : ""}
           </h3>
           <div class="recipe-actions">
             <button class="icon-action edit" type="button" data-action="edit" data-id="${escapeHtml(recipe.id)}" aria-label="編集" title="編集">
