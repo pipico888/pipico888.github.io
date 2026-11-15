@@ -539,11 +539,41 @@
   }
 
   .recipe-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1 1 auto;
+    min-width: 0;
     margin: 0;
     color: #555;
     font-family: "メイリオ", Meiryo, sans-serif;
     font-size: 19px;
     line-height: 1.35;
+  }
+
+  .recipe-link-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 19px;
+    height: 19px;
+    flex: 0 0 auto;
+    color: #4b8290;
+    text-decoration: none;
+    vertical-align: middle;
+  }
+  .recipe-link-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .recipe-link-icon svg path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .recipe-actions {
@@ -575,7 +605,7 @@
     width: 19px;
     height: 19px;
     display: block;
-    transform: rotate(25deg);
+    transform: rotate(50deg);
     transform-origin: center;
   }
   .icon-action.edit svg path,
@@ -1397,7 +1427,10 @@ async function renderList() {
     return `
       <article class="recipe-card">
         <div class="recipe-top">
-          <h3 class="recipe-name">${escapeHtml(recipe.name || "名前なし")}</h3>
+          <h3 class="recipe-name">
+            <span>${escapeHtml(recipe.name || "名前なし")}</span>
+            ${safeUrl ? `<a class="recipe-link-icon" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="レシピを見る" title="レシピを見る"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.8 14.2 14.2 9.8"/><path d="M8.1 16.1 6.7 17.5a4 4 0 0 1-5.7-5.7l4.2-4.2a4 4 0 0 1 5.7 0"/><path d="m15.9 7.9 1.4-1.4a4 4 0 0 1 5.7 5.7l-4.2 4.2a4 4 0 0 1-5.7 0"/></svg></a>` : ""}
+          </h3>
           <div class="recipe-actions">
             <button class="icon-action edit" type="button" data-action="edit" data-id="${escapeHtml(recipe.id)}" aria-label="編集" title="編集">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -1415,10 +1448,9 @@ async function renderList() {
           <span>🍳 <strong>${cookingCount(recipe)}回</strong> 作った</span>
           <span>最新：<strong>${formatDate(latest)}</strong></span>
         </div>
-        ${(safeUrl || recipe.memo) ? `
+        ${recipe.memo ? `
           <div class="recipe-description">
-            ${safeUrl ? `<a class="recipe-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">🔗 レシピを見る</a>` : ""}
-            ${recipe.memo ? `<div class="recipe-memo">${escapeHtml(recipe.memo)}</div>` : ""}
+            <div class="recipe-memo">${escapeHtml(recipe.memo)}</div>
           </div>` : ""}
         <div class="recipe-button-row">
           <button class="cook-button ${cookedToday ? "done" : ""}" type="button" data-action="cook" data-id="${escapeHtml(recipe.id)}">
